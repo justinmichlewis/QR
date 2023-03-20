@@ -38,7 +38,7 @@ export default {
     },
     formSubitted() {
       this.updateDeviceInfo();
-      this.$emit("sumbit");
+      this.$emit("sumbit", "kill");
     },
   },
 };

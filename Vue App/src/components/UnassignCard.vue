@@ -3,7 +3,8 @@
     <div class="card">
       Are you sure you want to unassign from your Organization?
       <div class="container">
-        <button class="button">Yes</button><button class="button2">No</button>
+        <button class="button" @click="unassignDevice">Yes</button
+        ><button class="button2">No</button>
       </div>
     </div>
   </div>
@@ -14,7 +15,14 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  props: {
+    selectedDevice: String,
+  },
+  methods: {
+    unassignDevice() {
+      console.log(this.selectedDevice);
+    },
+  },
 };
 </script>
 <style scoped>

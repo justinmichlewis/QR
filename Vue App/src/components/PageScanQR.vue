@@ -28,11 +28,11 @@
   <div v-show="showRegistration">
     <RegisterCard
       :selected-device="this.deviceDataFresh"
-      @DeviceInfo="registerDevice(false)"
+      @sumbit="registerDevice(false)"
     />
   </div>
   <div v-show="showUnassign">
-    <UnassignCard org="test" />
+    <UnassignCard :selected-device="this.deviceDataFresh" />
   </div>
 </template>
 
@@ -78,6 +78,11 @@ export default {
     },
     registerDevice(bool) {
       this.showRegistration = bool;
+      //In the case where we have dismissed the regisgration card, need to rest data back to initial state
+      //This clears out the data from the API call and renders the UI back to inital state
+      if (bool === false) {
+        this.deviceDataFresh = null;
+      }
     },
     unassignDevice(bool) {
       this.showUnassign = bool;
