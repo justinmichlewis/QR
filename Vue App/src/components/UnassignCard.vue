@@ -3,13 +3,14 @@
     <div class="card">
       Are you sure you want to unassign from your Organization?
       <div class="container">
-        <button class="button" @click="unassignDevice">Yes</button
+        <button class="button" @click="submitUnassign">Yes</button
         ><button class="button2">No</button>
       </div>
     </div>
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   name: "UnassignCard",
   data() {
@@ -19,8 +20,22 @@ export default {
     selectedDevice: String,
   },
   methods: {
-    unassignDevice() {
-      console.log(this.selectedDevice);
+    async unassignDevice() {
+      console.log("ID", this.selectedDevice.id);
+      const response = await axios.put(
+        "http://localhost:3030/devices/" + this.selectedDevice.id,
+        {
+          name: " ",
+          org: " ",
+          active: "false",
+          assigned: "false",
+        }
+      );
+      console.log(response);
+    },
+    submitUnassign() {
+      this.unassignDevice();
+      this.$emit("sumbit");
     },
   },
 };

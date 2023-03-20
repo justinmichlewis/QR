@@ -25,20 +25,21 @@ export default {
   },
   methods: {
     async updateDeviceInfo() {
-      console.log("REG: ", this.selectedDevice.id);
+      console.log("REG: ", this.selectedDevice);
       const response = await axios.put(
         "http://localhost:3030/devices/" + this.selectedDevice.id,
         {
           name: this.name,
           org: this.org,
           active: "true",
+          assigned: "true",
         }
       );
       console.log(response);
     },
     formSubitted() {
       this.updateDeviceInfo();
-      this.$emit("sumbit", "kill");
+      this.$emit("sumbit");
     },
   },
 };

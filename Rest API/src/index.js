@@ -20,14 +20,16 @@ const devices = [
   {
     id: 1,
     name: "Jane Doe",
-    org: "",
+    org: " ",
     active: "false",
+    assigned: "false",
   },
   {
     id: 2,
     name: "John Doe",
     org: "Org2",
     active: "true",
+    assigned: "true",
   },
 ];
 
@@ -75,7 +77,7 @@ app.get("/devices/:deviceID", (req, res) => {
   }
 });
 app.put("/devices/:deviceID", (req, res) => {
-  console.log(req.body.name, req.body.org);
+  console.log(req.body);
   try {
     const id = parseInt(req.params.deviceID);
     let device = devices.find((device) => device.id === id);
@@ -87,6 +89,9 @@ app.put("/devices/:deviceID", (req, res) => {
     const deviceIDX = devices.indexOf(device);
     devices[deviceIDX].name = req.body.name || devices[deviceIDX].name;
     devices[deviceIDX].org = req.body.org || devices[deviceIDX].org;
+    devices[deviceIDX].active = req.body.active || devices[deviceIDX].active;
+    devices[deviceIDX].assigned =
+      req.body.assigned || devices[deviceIDX].assigned;
     res.status(200).json({
       message: "Successfully updated device",
       device,

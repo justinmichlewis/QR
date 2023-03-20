@@ -1,22 +1,24 @@
 <template lang="">
   <div class="card">
     <ScanQRCode @DeviceInfo="storeDeviceInfo" />
-    <h3 v-if="deviceDataFresh">
+    <h3 v-if="deviceDataFresh.assigned">
       Organization Assignment:
-      <h4 v-if="deviceDataFresh">{{ deviceDataFresh.org }}</h4>
+      <h4 v-if="deviceDataFresh.assigned">
+        {{ deviceDataFresh.org }}
+      </h4>
       <h4 v-else>None</h4>
     </h3>
     <h3 v-else>Scan QR Code</h3>
-    <div class="container" v-if="deviceDataFresh">
+    <div class="container" v-if="deviceDataFresh.org">
       <button
-        v-show="!deviceDataFresh.org"
+        v-if="deviceDataFresh.assigned == 'false'"
         class="button"
         @click="registerDevice(true)"
       >
         Register
       </button>
       <button
-        v-show="deviceDataFresh.org"
+        v-if="deviceDataFresh.assigned == 'true'"
         class="button2"
         @click="unassignDevice(true)"
       >
@@ -32,7 +34,10 @@
     />
   </div>
   <div v-show="showUnassign">
-    <UnassignCard :selected-device="this.deviceDataFresh" />
+    <UnassignCard
+      :selected-device="this.deviceDataFresh"
+      @sumbit="unassignDevice(false)"
+    />
   </div>
 </template>
 
@@ -56,7 +61,13 @@ export default {
   data() {
     return {
       deviceDataStale: null,
-      deviceDataFresh: null,
+      deviceDataFresh: {
+        id: null,
+        name: null,
+        org: null,
+        active: null,
+        assigned: null,
+      },
       showRegistration: false,
       showUnassign: false,
     };
@@ -68,7 +79,7 @@ export default {
       );
 
       this.deviceDataFresh = response.data.device;
-      console.log(response.data.device);
+      console.log("fresh data", this.deviceDataFresh);
     },
     storeDeviceInfo(event) {
       this.deviceDataStale = JSON.parse(event);
@@ -77,15 +88,32 @@ export default {
       this.getFreshDeviceData();
     },
     registerDevice(bool) {
+      console.log("regisger");
       this.showRegistration = bool;
       //In the case where we have dismissed the regisgration card, need to rest data back to initial state
       //This clears out the data from the API call and renders the UI back to inital state
       if (bool === false) {
-        this.deviceDataFresh = null;
+        this.deviceDataFresh = {
+          id: null,
+          name: null,
+          org: null,
+          active: null,
+          assigned: null,
+        };
       }
+      console.log("RD STate", this.deviceDataFresh.assigned);
     },
     unassignDevice(bool) {
       this.showUnassign = bool;
+      if (bool === false) {
+        this.deviceDataFresh = {
+          id: null,
+          name: null,
+          org: null,
+          active: null,
+          assigned: null,
+        };
+      }
     },
   },
 };
