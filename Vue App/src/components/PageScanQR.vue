@@ -1,5 +1,4 @@
 <template lang="">
-  <button @click="getFreshDeviceData">Test Get Device</button>
   <div class="card">
     <ScanQRCode @DeviceInfo="storeDeviceInfo" />
     <h3 v-if="deviceDataFresh.assigned">
@@ -37,15 +36,18 @@
   <div v-show="showUnassign">
     <UnassignCard
       :selected-device="this.deviceDataFresh"
-      @sumbit="unassignDevice(false)"
+      @sumbit="unassignDevice(false), showModal()"
+      @dismiss="unassignDevice(false)"
     />
   </div>
+  <ModalPopUp v-show="isModalVisibile" @close="closeModal" />
 </template>
 
 <script>
 import ScanQRCode from "./ScanQRCode.vue";
 import RegisterCard from "./RegisterCard.vue";
 import UnassignCard from "./UnassignCard.vue";
+import ModalPopUp from "./ModalPopUp.vue";
 import axios from "axios";
 
 export default {
@@ -55,6 +57,7 @@ export default {
     ScanQRCode,
     RegisterCard,
     UnassignCard,
+    ModalPopUp,
   },
   props: {
     org: String,
@@ -71,25 +74,34 @@ export default {
       },
       showRegistration: false,
       showUnassign: false,
+      isModalVisibile: false,
     };
   },
   methods: {
+    showModal() {
+      this.isModalVisibile = true;
+    },
+    closeModal() {
+      this.isModalVisibile = false;
+    },
     async getFreshDeviceData() {
       const response = await axios.get(
-        "http://localhost:3030/devices/1" //+ this.deviceDataStale.id REVERT AFTER DB TESTING
+        "http://localhost:" +
+          this.globalVar +
+          "/devices/" +
+          this.deviceDataStale.id
       );
 
       this.deviceDataFresh = response.data.device;
-      console.log("fresh data", this.deviceDataFresh);
+      console.log("[PageScanQR]Fresh Data Load:", this.deviceDataFresh);
     },
     storeDeviceInfo(event) {
       this.deviceDataStale = JSON.parse(event);
 
-      console.log("Stale", event);
+      console.log("[PageScanQR]Stale Data Load:", event);
       this.getFreshDeviceData();
     },
     registerDevice(bool) {
-      console.log("regisger");
       this.showRegistration = bool;
       //In the case where we have dismissed the regisgration card, need to rest data back to initial state
       //This clears out the data from the API call and renders the UI back to inital state
@@ -102,7 +114,6 @@ export default {
           assigned: null,
         };
       }
-      console.log("RD STate", this.deviceDataFresh.assigned);
     },
     unassignDevice(bool) {
       this.showUnassign = bool;

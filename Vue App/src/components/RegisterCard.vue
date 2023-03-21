@@ -25,9 +25,12 @@ export default {
   },
   methods: {
     async updateDeviceInfo() {
-      console.log("REG: ", this.selectedDevice);
+      console.log("[RegisterCard]DeviceID:", this.selectedDevice.id);
       const response = await axios.put(
-        "http://localhost:3030/devices/" + this.selectedDevice.id,
+        "http://localhost:" +
+          this.globalVar +
+          "/devices/" +
+          this.selectedDevice.id,
         {
           name: this.name,
           org: this.org,
@@ -35,7 +38,7 @@ export default {
           assigned: "true",
         }
       );
-      console.log(response);
+      console.log("[RegisterCard]Register Device Response:", response);
     },
     formSubitted() {
       this.updateDeviceInfo();

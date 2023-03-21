@@ -4,7 +4,7 @@
       Are you sure you want to unassign from your Organization?
       <div class="container">
         <button class="button" @click="submitUnassign">Yes</button
-        ><button class="button2">No</button>
+        ><button class="button2" @click="dismissUnassign">No</button>
       </div>
     </div>
   </div>
@@ -21,9 +21,12 @@ export default {
   },
   methods: {
     async unassignDevice() {
-      console.log("ID", this.selectedDevice.id);
+      console.log("[UnassignedCard]DeviceID:", this.selectedDevice.id);
       const response = await axios.put(
-        "http://localhost:3030/devices/" + this.selectedDevice.id,
+        "http://localhost:" +
+          this.globalVar +
+          "/devices/" +
+          this.selectedDevice.id,
         {
           name: " ",
           org: " ",
@@ -31,11 +34,14 @@ export default {
           assigned: "false",
         }
       );
-      console.log(response);
+      console.log("[UnassignCard]Unassign Device Response:", response);
     },
     submitUnassign() {
       this.unassignDevice();
       this.$emit("sumbit");
+    },
+    dismissUnassign() {
+      this.$emit("dismiss");
     },
   },
 };

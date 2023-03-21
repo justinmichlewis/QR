@@ -1,7 +1,7 @@
 // Require expresssls
 const express = require("express");
 const app = express();
-const PORT = 3030;
+const PORT = 3001;
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
+/* For testing
 const devices = [
   {
     id: 1,
@@ -47,6 +47,8 @@ const devices = [
     assigned: "true",
   },
 ];
+
+*/
 
 // NEW - Add CORS headers - see https://enable-cors.org/server_expressjs.html
 app.use(function (req, res, next) {
