@@ -68,16 +68,21 @@ app.get("/devices", (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: "Failed to retrieve all devices",
+      message: error,
     });
   }
 });
+
 //GET DEVICE
-app.get("/devices/:deviceID", (req, res) => {
-  const id = parseInt(req.params.deviceID).toString();
-  console.log(id);
+app.get("/devices/:deviceID", async (req, res) => {
+  const deviceId = parseInt(req.params.deviceID).toString();
   try {
-    getUserFromDB(id);
+    let device = await getDeviceFromDB(deviceId);
+    console.log("");
+    console.log("DDDDDDDD", device);
+    res.status(200).json({
+      device,
+    });
   } catch (error) {
     res.status(500).json({
       message: "Failed to retrieve device",
@@ -85,6 +90,93 @@ app.get("/devices/:deviceID", (req, res) => {
   }
 });
 
+//UPDATE DEVICE
+app.put("/devices/:deviceID", async (req, res) => {
+  console.log(req.body);
+
+  const deviceID = parseInt(req.params.deviceID).toString();
+  console.log("Device ID", deviceID);
+  const response = await updateDeviceInDB(deviceID, req);
+  console.log(res);
+  res.status(200).json({ message: "Updated Device" });
+});
+// Delete a device by ID
+app.delete("/delete/:deviceID", (req, res) => {
+  // Delete a device by ID
+});
+// Delete all devices
+app.delete("/devices", (req, res) => {
+  // Delete all devices
+});
+
+//Update Device in DB
+updateDeviceInDB = async (deviceId, req) => {
+  const axios = require("axios");
+  let data = JSON.stringify({
+    collection: "Device_Data_Collection",
+    database: "Device_Data",
+    dataSource: "Cluster0",
+    filter: {
+      id: deviceId,
+    },
+    update: {
+      $set: {
+        name: req.body.name,
+        org: req.body.org,
+        active: req.body.active,
+        assigned: req.body.assigned,
+      },
+    },
+  });
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "https://data.mongodb-api.com/app/data-lkdot/endpoint/data/v1/action/updateOne",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Request-Headers": "*",
+      "api-key":
+        "6fTAvYQKf4fjqpQLVg8kD6tuyoECEiyQ7JE8zVWJPdYRR3yNyzbDUs94TsEGR4lO",
+    },
+    data: data,
+  };
+
+  const response = await axios.request(config);
+  console.log(JSON.stringify(response.data));
+  return response.data;
+};
+
+//Retreive Device from DB
+getDeviceFromDB = async (deviceId) => {
+  const axios = require("axios");
+  let data = JSON.stringify({
+    collection: "Device_Data_Collection",
+    database: "Device_Data",
+    dataSource: "Cluster0",
+    filter: {
+      id: deviceId,
+    },
+  });
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "https://data.mongodb-api.com/app/data-lkdot/endpoint/data/v1/action/findOne",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Request-Headers": "*",
+      "api-key":
+        "6fTAvYQKf4fjqpQLVg8kD6tuyoECEiyQ7JE8zVWJPdYRR3yNyzbDUs94TsEGR4lO",
+    },
+    data: data,
+  };
+  const response = await axios.request(config);
+  console.log("Data Fetched", JSON.stringify(response.data.document));
+  return response.data.document;
+};
+
+/*
 //UPDATE DEVICE
 app.put("/devices/:deviceID", (req, res) => {
   console.log(req.body);
@@ -111,44 +203,4 @@ app.put("/devices/:deviceID", (req, res) => {
       message: "Failed to retrieve device",
     });
   }
-});
-app.delete("/delete/:deviceID", (req, res) => {
-  // Delete a device by ID
-});
-app.delete("/devices", (req, res) => {
-  // Delete all devices
-});
-
-//Use to inteface witih MondgoDB
-getUserFromDB = async (deviceId) => {
-  const axios = require("axios");
-  let data = JSON.stringify({
-    collection: "Device_Data_Collection",
-    database: "Device_Data",
-    dataSource: "Cluster0",
-    filter: {
-      id: deviceId,
-    },
-  });
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "https://data.mongodb-api.com/app/data-lkdot/endpoint/data/v1/action/findOne",
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Request-Headers": "*",
-      "api-key":
-        "6fTAvYQKf4fjqpQLVg8kD6tuyoECEiyQ7JE8zVWJPdYRR3yNyzbDUs94TsEGR4lO",
-    },
-    data: data,
-  };
-  await axios
-    .request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+});*/
