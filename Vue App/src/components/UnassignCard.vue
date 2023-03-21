@@ -39,9 +39,10 @@ export default {
     submitUnassign() {
       this.unassignDevice();
       this.$emit("sumbit");
+      this.$emit("modal", this.selectedDevice.org);
     },
     dismissUnassign() {
-      this.$emit("dismiss");
+      this.$emit("dismiss", this.selectedDevice.org);
     },
   },
 };

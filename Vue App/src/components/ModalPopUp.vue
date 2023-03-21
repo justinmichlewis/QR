@@ -1,24 +1,22 @@
 <template lang="">
-  <div class="modal-backdrop">
-    <div class="modal">
-      <header class="modal-header">
-        <slot name="header"> This is the default title! </slot>
-        <button type="button" class="btn-close" @click="close">x</button>
-      </header>
-
-      <section class="modal-body">
-        <slot name="body"> This is the default body! </slot>
-      </section>
-
-      <footer class="modal-footer">
-        <slot name="footer"> This is the default footer! </slot>
-        <button type="button" class="btn-green" @click="close">
-          Close Modal
-        </button>
-      </footer>
+  <transition name="modal-fade">
+    <div class="modal-backdrop">
+      <div class="modal">
+        <header class="modal-header">
+          <slot name="header" class="top">Succes</slot>
+        </header>
+        <section class="modal-body">
+          <slot name="body">Device has been unassigned from org</slot>
+        </section>
+        <footer class="modal-footer">
+          <slot name="footer"> </slot>
+          <button type="button" class="btn-green" @click="close">Close</button>
+        </footer>
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
+
 <script>
 export default {
   name: "ModalPopUp",
@@ -27,9 +25,18 @@ export default {
       this.$emit("close");
     },
   },
+  onMounted() {
+    setTimeout(() => {
+      console.log("World!");
+    }, 500);
+  },
 };
 </script>
+
 <style scoped>
+.top {
+  text-align: center;
+}
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -58,19 +65,18 @@ export default {
 
 .modal-header {
   position: relative;
-  border-bottom: 1px solid #eeeeee;
-  color: #4aae9b;
   justify-content: space-between;
+  font-size: xx-large;
 }
 
 .modal-footer {
-  border-top: 1px solid #eeeeee;
   flex-direction: column;
   justify-content: flex-end;
 }
 
 .modal-body {
   position: relative;
+  text-align: center;
   padding: 20px 10px;
 }
 
@@ -92,5 +98,23 @@ export default {
   background: #4aae9b;
   border: 1px solid #4aae9b;
   border-radius: 2px;
+}
+
+/*Vue JS CSS Components*/
+.modal-fade-enter-active {
+  transition: opacity 0.5s ease;
+}
+
+.modal-fade-enter {
+  transition: opacity 0.5s ease;
+}
+
+.modal-fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.modal-fade-leave-to,
+.modal-fade-enter-from {
+  opacity: 0;
 }
 </style>

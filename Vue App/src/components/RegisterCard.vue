@@ -43,6 +43,7 @@ export default {
     formSubitted() {
       this.updateDeviceInfo();
       this.$emit("sumbit");
+      this.$emit("modal", this.org);
     },
   },
 };

@@ -31,16 +31,35 @@
     <RegisterCard
       :selected-device="this.deviceDataFresh"
       @sumbit="registerDevice(false)"
+      @modal="showRegisterModal"
     />
   </div>
   <div v-show="showUnassign">
     <UnassignCard
       :selected-device="this.deviceDataFresh"
-      @sumbit="unassignDevice(false), showModal()"
+      @sumbit="unassignDevice(false)"
       @dismiss="unassignDevice(false)"
+      @modal="showUnassignModal"
     />
   </div>
-  <ModalPopUp v-show="isModalVisibile" @close="closeModal" />
+  <ModalPopUp v-show="isUnassignModalVisibile" @close="closeModal">
+    <template v-slot:header> Success </template>
+
+    <template v-slot:body>
+      Device has been unassigned from <b>{{ modalOrg }}</b> org
+    </template>
+
+    <template v-slot:footer> </template>
+  </ModalPopUp>
+  <ModalPopUp v-show="isRegisterModalVisibile" @close="closeModal">
+    <template v-slot:header> Success </template>
+
+    <template v-slot:body>
+      Device has been registered to <b>{{ modalOrg }}</b> org
+    </template>
+
+    <template v-slot:footer> </template>
+  </ModalPopUp>
 </template>
 
 <script>
@@ -74,15 +93,25 @@ export default {
       },
       showRegistration: false,
       showUnassign: false,
-      isModalVisibile: false,
+      isUnassignModalVisibile: false,
+      isRegisterModalVisibile: false,
+      modalOrg: "",
     };
   },
   methods: {
-    showModal() {
-      this.isModalVisibile = true;
+    showUnassignModal(e) {
+      this.isUnassignModalVisibile = true;
+      console.log("e", e);
+      this.modalOrg = e;
+    },
+    showRegisterModal(e) {
+      this.isRegisterModalVisibile = true;
+      console.log("e", e);
+      this.modalOrg = e;
     },
     closeModal() {
-      this.isModalVisibile = false;
+      this.isUnassignModalVisibile = false;
+      this.isRegisterModalVisibile = false;
     },
     async getFreshDeviceData() {
       const response = await axios.get(
