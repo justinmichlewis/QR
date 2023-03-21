@@ -5,11 +5,26 @@ const PORT = 3030;
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const axios = require("axios");
 
 app.use(helmet());
 app.use(express.json());
 app.use(cors());
 app.use(morgan("combined"));
+
+// Enable CORS
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,OPTIONS,POST,PUT,DELETE"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  next();
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.listen(PORT, () => {
@@ -57,25 +72,20 @@ app.get("/devices", (req, res) => {
     });
   }
 });
+//GET DEVICE
 app.get("/devices/:deviceID", (req, res) => {
-  const id = parseInt(req.params.deviceID);
+  const id = parseInt(req.params.deviceID).toString();
   console.log(id);
   try {
-    let device = devices.find((device) => device.id === id);
-    if (!device) {
-      return res.status(404).json({
-        message: "Device not found",
-      });
-    }
-    res.status(200).json({
-      device,
-    });
+    getUserFromDB(id);
   } catch (error) {
     res.status(500).json({
       message: "Failed to retrieve device",
     });
   }
 });
+
+//UPDATE DEVICE
 app.put("/devices/:deviceID", (req, res) => {
   console.log(req.body);
   try {
@@ -108,3 +118,37 @@ app.delete("/delete/:deviceID", (req, res) => {
 app.delete("/devices", (req, res) => {
   // Delete all devices
 });
+
+//Use to inteface witih MondgoDB
+getUserFromDB = async (deviceId) => {
+  const axios = require("axios");
+  let data = JSON.stringify({
+    collection: "Device_Data_Collection",
+    database: "Device_Data",
+    dataSource: "Cluster0",
+    filter: {
+      id: deviceId,
+    },
+  });
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "https://data.mongodb-api.com/app/data-lkdot/endpoint/data/v1/action/findOne",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Request-Headers": "*",
+      "api-key":
+        "6fTAvYQKf4fjqpQLVg8kD6tuyoECEiyQ7JE8zVWJPdYRR3yNyzbDUs94TsEGR4lO",
+    },
+    data: data,
+  };
+  await axios
+    .request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};

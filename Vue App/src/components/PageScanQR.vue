@@ -1,4 +1,5 @@
 <template lang="">
+  <button @click="getFreshDeviceData">Test Get Device</button>
   <div class="card">
     <ScanQRCode @DeviceInfo="storeDeviceInfo" />
     <h3 v-if="deviceDataFresh.assigned">
@@ -75,7 +76,7 @@ export default {
   methods: {
     async getFreshDeviceData() {
       const response = await axios.get(
-        "http://localhost:3030/devices/" + this.deviceDataStale.id
+        "http://localhost:3030/devices/1" //+ this.deviceDataStale.id REVERT AFTER DB TESTING
       );
 
       this.deviceDataFresh = response.data.device;
