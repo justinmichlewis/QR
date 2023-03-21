@@ -1,11 +1,26 @@
 <template lang="">
   <div>
     <div class="card">
-      <label for="Name">Name:</label><br />
-      <input type="text" id="name" name="name" v-model="name" /><br />
-      <label for="Org">Org</label><br />
-      <input type="text" id="org" name="org" v-model="org" /><br /><br />
-      <button class="button" @click="formSubitted">Subumt</button>
+      <label for="Name" class="label-text">Name</label><br />
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="input-text"
+        v-model="name"
+      /><br />
+      <label for="Org" class="label-text">Organization</label><br />
+      <input
+        type="text"
+        id="org"
+        name="org"
+        class="input-text"
+        v-model="org"
+      /><br /><br />
+      <div class="button-center">
+        <button class="button" @click="formSubitted">Subumt</button>
+        <button class="button2" @click="dismissUnassign">Cancel</button>
+      </div>
     </div>
   </div>
 </template>
@@ -57,15 +72,20 @@ export default {
   padding: 5px;
   margin-top: 10px;
 }
-.button {
+
+.input-text {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
   display: inline-block;
-  background-color: #4caf50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.label-text {
+  font-size: larger;
+}
+input[type="text"] {
+  font-size: 18px;
 }
 </style>

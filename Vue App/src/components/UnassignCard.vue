@@ -1,8 +1,8 @@
 <template lang="">
   <div>
-    <div class="card">
+    <div class="card marg subtitles">
       Are you sure you want to unassign from your Organization?
-      <div class="container">
+      <div class="container marg">
         <button class="button" @click="submitUnassign">Yes</button
         ><button class="button2" @click="dismissUnassign">No</button>
       </div>
@@ -55,29 +55,6 @@ export default {
   border: 1px solid gray;
   padding: 5px;
   margin-top: 10px;
-}
-.button {
-  display: inline-block;
-  background-color: #4caf50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
-.button2 {
-  display: inline-block;
-  background-color: gray;
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 10px;
 }
 .container {
   text-align: center;

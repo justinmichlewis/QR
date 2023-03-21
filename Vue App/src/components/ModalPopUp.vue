@@ -10,7 +10,7 @@
         </section>
         <footer class="modal-footer">
           <slot name="footer"> </slot>
-          <button type="button" class="btn-green" @click="close">Close</button>
+          <button type="button" class="button" @click="close">Close</button>
         </footer>
       </div>
     </div>
@@ -78,26 +78,7 @@ export default {
   position: relative;
   text-align: center;
   padding: 20px 10px;
-}
-
-.btn-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border: none;
-  font-size: 20px;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #4aae9b;
-  background: transparent;
-}
-
-.btn-green {
-  color: white;
-  background: #4aae9b;
-  border: 1px solid #4aae9b;
-  border-radius: 2px;
+  font-size: larger;
 }
 
 /*Vue JS CSS Components*/

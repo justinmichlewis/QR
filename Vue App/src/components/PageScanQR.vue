@@ -1,31 +1,34 @@
 <template lang="">
   <div class="card">
     <ScanQRCode @DeviceInfo="storeDeviceInfo" />
-    <h3 v-if="deviceDataFresh.assigned">
-      Organization Assignment:
-      <h4 v-if="deviceDataFresh.assigned">
-        {{ deviceDataFresh.org }}
-      </h4>
-      <h4 v-else>None</h4>
-    </h3>
+    <div v-if="deviceDataFresh.assigned == 'true'">
+      <div class="subtitles marg">
+        Device Assigned To:
+        <div class="subtitles">
+          {{ deviceDataFresh.org }}
+        </div>
+      </div>
+    </div>
+    <div class="subtitles marg" v-else-if="deviceDataFresh.assigned == 'false'">
+      No Device Assigned, Register?
+    </div>
     <h3 v-else>Scan QR Code</h3>
-    <div class="container" v-if="deviceDataFresh.org">
+    <div class="button-center">
       <button
         v-if="deviceDataFresh.assigned == 'false'"
-        class="button"
+        class="button full"
         @click="registerDevice(true)"
       >
         Register
       </button>
       <button
         v-if="deviceDataFresh.assigned == 'true'"
-        class="button2"
+        class="button2 full"
         @click="unassignDevice(true)"
       >
         Unassign
       </button>
     </div>
-    <div v-else></div>
   </div>
   <div v-show="showRegistration">
     <RegisterCard
@@ -60,6 +63,14 @@
 
     <template v-slot:footer> </template>
   </ModalPopUp>
+  <DevMenu
+    v-show="isDevControlVisible"
+    @close="closeDevTools"
+    @regUI="forceRegisterUI"
+    @unaUI="forceUnassignUI"
+    @modalUI="forceModalUI"
+  />
+  <button class="dev" @click="openDevMenu">Dev tools</button>
 </template>
 
 <script>
@@ -67,6 +78,7 @@ import ScanQRCode from "./ScanQRCode.vue";
 import RegisterCard from "./RegisterCard.vue";
 import UnassignCard from "./UnassignCard.vue";
 import ModalPopUp from "./ModalPopUp.vue";
+import DevMenu from "./DevMenu.vue";
 import axios from "axios";
 
 export default {
@@ -77,6 +89,7 @@ export default {
     RegisterCard,
     UnassignCard,
     ModalPopUp,
+    DevMenu,
   },
   props: {
     org: String,
@@ -96,6 +109,7 @@ export default {
       isUnassignModalVisibile: false,
       isRegisterModalVisibile: false,
       modalOrg: "",
+      isDevControlVisible: false,
     };
   },
   methods: {
@@ -156,6 +170,33 @@ export default {
         };
       }
     },
+    openDevMenu() {
+      this.isDevControlVisible = true;
+    },
+    closeDevTools() {
+      this.isDevControlVisible = false;
+    },
+    forceRegisterUI() {
+      this.deviceDataFresh.assigned = "false";
+      this.showRegistration = true;
+      this.isDevControlVisible = false;
+
+      this.deviceDataFresh.assigned = "false";
+      this.showUnassign = false;
+      this.isDevControlVisible = false;
+    },
+    forceUnassignUI() {
+      this.deviceDataFresh.assigned = "true";
+      this.showUnassign = true;
+      this.isDevControlVisible = false;
+
+      this.deviceDataFresh.assigned = "true";
+      this.showRegistration = false;
+    },
+    forceModalUI() {
+      this.isUnassignModalVisibile = true;
+      this.isDevControlVisible = false;
+    },
   },
 };
 </script>
@@ -166,32 +207,18 @@ export default {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   border: 1px solid gray;
-  padding: 5px;
+  padding: 15px;
 }
-.button {
-  display: inline-block;
-  background-color: #4caf50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
-.button2 {
-  display: inline-block;
-  background-color: gray;
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 10px;
-}
+
 .container {
   text-align: center;
+}
+.full {
+  width: 100%;
+}
+.dev {
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 </style>
